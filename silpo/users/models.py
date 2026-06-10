@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
-class CutomUser(AbstractUser):
+class CustomUser(AbstractUser):
     image_small = models.CharField(max_length=100, blank=True, null=True)
     image_medium = models.CharField(max_length=100, blank=True, null=True)
     image_large = models.CharField(max_length=100, blank=True, null=True)
