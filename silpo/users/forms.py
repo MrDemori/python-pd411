@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
 
-class CustomUserForm(UserCreationForm):
+class CustomUserRegisterForm(UserCreationForm):
     
     email = forms.EmailField(
         label='Email',
@@ -14,25 +15,25 @@ class CustomUserForm(UserCreationForm):
     )
 
     first_name = forms.CharField(
-        label='Ім\'я',
+        label='First Name',
         required=True,
         widget=forms.TextInput(attrs={
             'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
-            'placeholder': 'Вкажіть ім\'я'
+            'placeholder': 'Enter your first name'
         })
     )
 
     last_name = forms.CharField(
-        label='Прізвище',
+        label='Last Name',
         required=True,
         widget=forms.TextInput(attrs={
             'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
-            'placeholder': 'Вкажіть прізвище'
+            'placeholder': 'Enter your last name'
         })
     )
 
     image = forms.ImageField(
-        label='Зображення',
+        label='Image',
         required=True,
         widget=forms.FileInput(attrs={
             'class': 'block w-full text-sm text-gray-400 '
@@ -47,23 +48,56 @@ class CustomUserForm(UserCreationForm):
     )
 
     password1 = forms.CharField(
-        label='Пароль',
+        label='Password',
         required=True,
         widget=forms.PasswordInput(attrs={
             'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
-            'placeholder': 'Вкажіть пароль'
+            'placeholder': 'Enter your password'
         })
     )
 
     password2 = forms.CharField(
-        label='Повторіть пароль',
+        label='Confirm Password',
         required=True,
         widget=forms.PasswordInput(attrs={
             'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
-            'placeholder': 'Повтор пароля'
+            'placeholder': 'Confirm your password'
         })
     )
     
     class Meta:
         model = CustomUser
         fields = ('email', 'first_name', 'last_name', 'image', 'password1', 'password2')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError('Email already exists.')
+        return email
+    
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError('Passwords do not match.')
+        return password2
+
+class CustomUserLoginForm(AuthenticationForm):
+
+    username = forms.EmailField(
+        label='Email',
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none', 
+            'placeholder': 'Enter your email'
+        })
+    )
+
+    password = forms.CharField(
+        label='Password',
+        required=True,
+        widget=forms.PasswordInput(attrs={
+            'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
+            'placeholder': 'Enter your password'
+        })
+    )
