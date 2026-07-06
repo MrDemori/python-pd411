@@ -2,6 +2,12 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.contrib.auth.forms import SetPasswordForm
 
 class CustomUserRegisterForm(UserCreationForm):
     
@@ -99,5 +105,58 @@ class CustomUserLoginForm(AuthenticationForm):
         widget=forms.PasswordInput(attrs={
             'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
             'placeholder': 'Enter your password'
+        })
+    )
+
+class CustomPasswordResetForm(forms.Form):
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
+            'placeholder': 'example@gmail.com'
+        })
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("User with this email not found")
+        return email
+
+    def save(self, request):
+        email = self.cleaned_data['email']
+        user = CustomUser.objects.get(email=email)
+
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+        reset_link = request.build_absolute_uri(
+            f'/users/reset/{uid}/{token}/'
+        )
+
+        subject = 'Password Reset'
+        message = render_to_string('password_reset_email.html', {
+            'user': user,
+            'reset_link': reset_link,
+        })
+
+        send_mail(subject, message, None, [email])
+
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label='New Password',
+        widget=forms.PasswordInput(attrs={
+            'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
+            'placeholder': 'Enter new password'
+        })
+    )
+
+    new_password2 = forms.CharField(
+        label='Confirm New Password',
+        widget=forms.PasswordInput(attrs={
+            'class': 'w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none',
+            'placeholder': 'Confirm new password'
         })
     )
