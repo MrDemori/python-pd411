@@ -24,4 +24,5 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('', views.homepage, name='homepage'),
     path('about/', views.about),
+    path('categories/', include('categories.urls')),
 ]
