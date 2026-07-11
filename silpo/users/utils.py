@@ -16,12 +16,6 @@ def compress_image(image_field, size=(800, 800), quality=85):
     resized_image = ContentFile(img_io.getvalue()) # Отримуємо зображення
     return resized_image, img_name # Повертаємо зображення та його назву
 
-    # img = Image.open(image_field)
-    # img.thumbnail(size, Image.ANTIALIAS)
-    # img_io = io.BytesIO()
-    # img.save(img_io, format='JPEG', quality=quality)
-    # return ContentFile(img_io.getvalue(), name=f"{uuid.uuid4()}.jpg")
-
 def save_custom_img(image, size, folder):
     resized_image, image_name = compress_image(image, size)
     # Створюємо шлях до директорії та шлях до файлу

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Create Category{% endblock %}
+{% block title %}Edit Category{% endblock %}
 
 {% block content %}
 <div class="min-h-screen flex items-center justify-center bg-gray-900 px-4 py-10">
@@ -8,11 +8,11 @@
     <div class="w-full max-w-2xl rounded-2xl bg-gray-800 p-8 shadow-xl">
 
         <h1 class="mb-2 text-3xl font-bold text-center text-white">
-            Create Category
+            Edit Category
         </h1>
 
         <p class="mb-8 text-center text-gray-400">
-            Add a new category to your store.
+            Update the category information.
         </p>
 
         <form method="POST"
@@ -37,48 +37,58 @@
             <!-- Name -->
             <div>
                 <label class="mb-2 block text-sm font-medium text-gray-300">
-                    Name
+                    {{ form.name.label }}
                 </label>
 
                 <input
                     type="text"
                     name="name"
                     value="{{ form.name.value|default:'' }}"
-                    placeholder="Example: Laptops"
                     class="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
 
             <!-- Slug -->
             <div>
                 <label class="mb-2 block text-sm font-medium text-gray-300">
-                    Slug
+                    {{ form.slug.label }}
                 </label>
 
                 <input
                     type="text"
                     name="slug"
                     value="{{ form.slug.value|default:'' }}"
-                    placeholder="Example: laptops"
                     class="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
 
             <!-- Description -->
             <div>
                 <label class="mb-2 block text-sm font-medium text-gray-300">
-                    Description
+                    {{ form.description.label }}
                 </label>
 
                 <textarea
                     name="description"
                     rows="5"
-                    placeholder="Category description..."
                     class="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ form.description.value|default:'' }}</textarea>
             </div>
 
-            <!-- Image -->
+            <!-- Current image -->
+            {% if category.image %}
             <div>
                 <label class="mb-2 block text-sm font-medium text-gray-300">
-                    Image
+                    Current Image
+                </label>
+
+                <img src="{{ category.image.url }}"
+                     alt="{{ category.name }}"
+                     class="h-48 w-full rounded-lg object-cover border border-gray-700">
+            </div>
+            {% endif %}
+
+            <!-- New image -->
+            <div>
+                <label class="mb-2 block text-sm font-medium text-gray-300">
+                    Change Image
                 </label>
 
                 <input
@@ -91,7 +101,6 @@
                            hover:file:bg-indigo-500">
             </div>
 
-            <!-- Buttons -->
             <div class="flex gap-4 pt-4">
 
                 <a href="{% url 'categories:list' %}"
@@ -102,7 +111,7 @@
                 <button
                     type="submit"
                     class="flex-1 rounded-lg bg-indigo-600 py-3 font-semibold text-white transition hover:bg-indigo-500">
-                    Create Category
+                    Save Changes
                 </button>
 
             </div>
