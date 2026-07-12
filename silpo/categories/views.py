@@ -47,3 +47,17 @@ def edit_category(request, pk):
         "form": form,
         "category": category
     })
+
+def category_products(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+
+    products = category.products.all()
+
+    return render(
+        request,
+        "category_products.html",
+        {
+            "category": category,
+            "products": products,
+        },
+    )
