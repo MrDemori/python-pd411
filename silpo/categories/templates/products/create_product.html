@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+
+{% block title %}Create Product{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-900 px-4 py-10">
+
+    <div class="w-full max-w-2xl rounded-2xl bg-gray-800 p-8 shadow-xl">
+
+        <h1 class="mb-2 text-center text-3xl font-bold text-white">
+            Create Product
+        </h1>
+
+        <p class="mb-8 text-center text-gray-400">
+            Add a new product to your store.
+        </p>
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="space-y-6">
+
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p>
+                            <span class="font-semibold">{{ field.label }}:</span>
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Name -->
+            <div>
+                <label class="mb-2 block text-sm font-medium text-gray-300">
+                    {{ form.name.label }}
+                </label>
+
+                {{ form.name }}
+
+                {% if form.name.errors %}
+                    <div class="mt-2 text-sm text-red-400">
+                        {{ form.name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Category -->
+            <div>
+                <label class="mb-2 block text-sm font-medium text-gray-300">
+                    {{ form.category.label }}
+                </label>
+
+                {{ form.category }}
+
+                {% if form.category.errors %}
+                    <div class="mt-2 text-sm text-red-400">
+                        {{ form.category.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Slug -->
+            <div>
+                <label class="mb-2 block text-sm font-medium text-gray-300">
+                    {{ form.slug.label }}
+                </label>
+
+                {{ form.slug }}
+
+                {% if form.slug.errors %}
+                    <div class="mt-2 text-sm text-red-400">
+                        {{ form.slug.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="mb-2 block text-sm font-medium text-gray-300">
+                    {{ form.description.label }}
+                </label>
+
+                {{ form.description }}
+
+                {% if form.description.errors %}
+                    <div class="mt-2 text-sm text-red-400">
+                        {{ form.description.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Price -->
+            <div>
+                <label class="mb-2 block text-sm font-medium text-gray-300">
+                    {{ form.price.label }}
+                </label>
+
+                {{ form.price }}
+
+                {% if form.price.errors %}
+                    <div class="mt-2 text-sm text-red-400">
+                        {{ form.price.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Images -->
+            <div>
+                <label class="mb-2 block text-sm font-medium text-gray-300">
+                    Product Images
+                </label>
+
+                <input
+                    type="file"
+                    name="image"
+                    multiple
+                    class="block w-full rounded-lg border border-gray-700 bg-gray-900 text-gray-300
+                           file:mr-4 file:rounded-lg file:border-0
+                           file:bg-indigo-600 file:px-4 file:py-2
+                           file:font-medium file:text-white
+                           hover:file:bg-indigo-500">
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-4 pt-4">
+                <button
+                    type="submit"
+                    class="flex-1 rounded-lg bg-indigo-600 py-3 font-semibold text-white transition hover:bg-indigo-500">
+                    Create Product
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,4 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
+
+from products.forms import ProductForm
+from products.models import ProductImage
 from .forms import CategoryForm
 from .models import Category
 
@@ -55,9 +58,27 @@ def category_products(request, pk):
 
     return render(
         request,
-        "category_products.html",
+        "products/products.html",
         {
             "category": category,
             "products": products,
         },
     )
+
+def create_product(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save()
+            images = request.FILES.getlist('image')
+            for i, image in enumerate(images):
+                ProductImage.objects.create(product=product, image=image, priority=i)
+            return redirect("categories:products", pk=category.pk)
+    else:
+        form = ProductForm()
+    return render(request, "products/create_product.html",{
+        "form": form,
+        "category": category
+    })
