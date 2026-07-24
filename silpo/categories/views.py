@@ -4,6 +4,7 @@ from products.forms import ProductForm
 from products.models import ProductImage
 from .forms import CategoryForm
 from .models import Category
+from products.models import Product
 
 def categories(request):
     categories = Category.objects.all()
@@ -82,3 +83,16 @@ def create_product(request, pk):
         "form": form,
         "category": category
     })
+
+def view_product(request, category_pk, product_pk):
+    category = get_object_or_404(Category, pk=category_pk)
+    product = get_object_or_404(Product, pk=product_pk)
+
+    return render(
+        request,
+        "products/view_product.html",
+        {
+            "category": category,
+            "product": product,
+        }
+    )
